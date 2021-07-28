@@ -28,7 +28,7 @@ func main() {
 	loggedRouter := loggingMiddleware(router)
 
 	/* Corro el SV. */
-	if err := http.ListenAndServe(SV_PORT, handlers.CORS(headers, methods, origins)(loggedRouter)); err != nil {
+	if err := http.ListenAndServe(os.Getenv("PORT"), handlers.CORS(headers, methods, origins)(loggedRouter)); err != nil {
 		logger.Log("status", "fatal", "err", err)
 		os.Exit(1)
 	}
