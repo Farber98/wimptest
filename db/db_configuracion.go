@@ -13,7 +13,7 @@ import (
 var MongoCN = ConectarBD()
 
 /* clientOptions for MongoDB. */
-var clientOptions = options.Client().ApplyURI(os.Getenv(MONGODB_URI))
+var clientOptions = options.Client().ApplyURI(os.Getenv("MONGODB_URI"))
 
 /* Funcion para conectarse a la BD. */
 func ConectarBD() *mongo.Client {
