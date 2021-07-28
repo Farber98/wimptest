@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"log"
+	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -12,7 +13,7 @@ import (
 var MongoCN = ConectarBD()
 
 /* clientOptions for MongoDB. */
-var clientOptions = options.Client().ApplyURI(DB_HOST)
+var clientOptions = options.Client().ApplyURI(os.Getenv(DB_HOST))
 
 /* Funcion para conectarse a la BD. */
 func ConectarBD() *mongo.Client {
