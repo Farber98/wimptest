@@ -48,7 +48,7 @@ func CrearUsuario(w http.ResponseWriter, r *http.Request) {
 
 	_, duplicateUsername, _ := db.UsuarioDuplicado(usuario.Usuario)
 	if duplicateUsername {
-		http.Error(w, "Nombre de usuario no disponible.", http.StatusBadRequest)
+		http.Error(w, "Ya existe un usuario registrado con ese nombre de usuario.", http.StatusBadRequest)
 		return
 	}
 
