@@ -17,6 +17,10 @@ var clientOptions = options.Client().ApplyURI(os.Getenv("MONGODB_URI"))
 
 /* Funcion para conectarse a la BD. */
 func ConectarBD() *mongo.Client {
+	/* Para pruebas locales. */
+	if os.Getenv("MONGODB_URI") == "" {
+		clientOptions = options.Client().ApplyURI(DB_HOST)
+	}
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		log.Fatal(err.Error())

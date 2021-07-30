@@ -16,8 +16,13 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 	origins := handlers.AllowedOrigins([]string{"*"})
 
 	/* Rutas */
-	r.HandleFunc("/usuarios/crear", (midl.ChequeoDB((manejadores.CrearUsuario)))).Methods("POST")
+
+	/* Usuarios */
+	r.HandleFunc("/usuarios/crear", midl.ChequeoDB((manejadores.CrearUsuario))).Methods("POST")
 	r.HandleFunc("/usuarios/iniciar-sesion", (midl.ChequeoDB((manejadores.IniciarSesion)))).Methods("POST")
 
+	/* Switches */
+	r.HandleFunc("/switches/crear", midl.ChequeoDB(midl.ValidarJwt(manejadores.CrearSwitch))).Methods("POST")
+	r.HandleFunc("/switches/topologia", midl.ChequeoDB(midl.ValidarJwt(manejadores.VerTopologia))).Methods("GET")
 	return headers, origins, methods, r
 }
