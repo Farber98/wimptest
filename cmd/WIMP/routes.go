@@ -19,10 +19,15 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 
 	/* Usuarios */
 	r.HandleFunc("/usuarios/crear", midl.ChequeoDB((manejadores.CrearUsuario))).Methods("POST")
-	r.HandleFunc("/usuarios/iniciar-sesion", (midl.ChequeoDB((manejadores.IniciarSesion)))).Methods("POST")
+	r.HandleFunc("/usuarios/iniciar-sesion", midl.ChequeoDB((manejadores.IniciarSesion))).Methods("POST")
 
 	/* Switches */
-	r.HandleFunc("/switches/crear", midl.ChequeoDB(midl.ValidarJwt(manejadores.CrearSwitch))).Methods("POST")
-	r.HandleFunc("/switches/topologia", midl.ChequeoDB(midl.ValidarJwt(manejadores.VerTopologia))).Methods("GET")
+	r.HandleFunc("/switches/crear", midl.ValidarJwt(midl.ChequeoDB(manejadores.CrearSwitch))).Methods("POST")
+	r.HandleFunc("/switches/topologia", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerTopologia))).Methods("GET")
+	r.HandleFunc("/switches/modificar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ModificarSwitch))).Methods("PUT")
+	r.HandleFunc("/switches/borrar", midl.ValidarJwt(midl.ChequeoDB(manejadores.BorrarSwitch))).Methods("DELETE")
+	r.HandleFunc("/switches/activar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ActivarSwitch))).Methods("PUT")
+	r.HandleFunc("/switches/desactivar", midl.ValidarJwt(midl.ChequeoDB(manejadores.DesactivarSwitch))).Methods("PUT")
+
 	return headers, origins, methods, r
 }
