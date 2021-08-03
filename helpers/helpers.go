@@ -16,7 +16,7 @@ func GenerarJwt(t structs.Usuarios) (string, error) {
 		"_id":      t.IdUsuario.Hex(),
 		"username": t.Usuario,
 		"email":    t.Email,
-		"exp":      time.Now().Add(time.Minute * 1).Unix(),
+		"exp":      time.Now().Add(time.Hour * 12).Unix(),
 	}
 
 	/* Define jwt con privilegios y  algoritmo de firmado */
