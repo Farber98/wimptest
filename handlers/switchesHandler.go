@@ -129,7 +129,8 @@ func ModificarSwitch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Debe especificar latitud y longitud.", http.StatusBadRequest)
 		return
 	}
-
+	switchModificado["lat"] = s.Lat
+	switchModificado["lng"] = s.Lng
 	switchModificado["fecha"] = time.Now()
 
 	status, err := db.ModificarSwitch(s.IdSwitch, switchModificado)
