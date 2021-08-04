@@ -3,6 +3,7 @@ package manejadores
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/Farber98/WIMP/db"
 	"github.com/Farber98/WIMP/helpers"
@@ -19,6 +20,11 @@ func CrearUsuario(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, " Error: "+err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	/* Sanitizamos */
+	usuario.Usuario = strings.TrimSpace(usuario.Usuario)
+	usuario.Email = strings.TrimSpace(usuario.Email)
+	usuario.Password = strings.TrimSpace(usuario.Password)
 
 	if len(usuario.Email) == 0 {
 		http.Error(w, "Email requerido.", http.StatusBadRequest)

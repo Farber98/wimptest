@@ -3,6 +3,7 @@ package manejadores
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/Farber98/WIMP/db"
@@ -18,6 +19,10 @@ func CrearSwitch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, " Error: "+err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	/* Sanitizamos */
+	s.Modelo = strings.TrimSpace(s.Modelo)
+	s.Nombre = strings.TrimSpace(s.Nombre)
 
 	if len(s.Nombre) == 0 {
 		http.Error(w, "Nombre requerido.", http.StatusBadRequest)
@@ -50,7 +55,15 @@ func CrearSwitch(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "No existe un padre con ese ID.", http.StatusBadRequest)
 			return
 		}
+
+		//No permitir que se creen hijos con padre desactivado.
+		_, active, _ := db.EstaActivo(s.IdPadre)
+		if !active {
+			http.Error(w, "El padre esta desactivado.", http.StatusBadRequest)
+			return
+		}
 	}
+
 	_, status, err := db.CrearSwitch(s)
 	if err != nil {
 		http.Error(w, "Error al realizar el registro del switch."+err.Error(), http.StatusBadRequest)
@@ -90,6 +103,25 @@ func ModificarSwitch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	/* Sanitizamos */
+	s.Modelo = strings.TrimSpace(s.Modelo)
+	s.Nombre = strings.TrimSpace(s.Nombre)
+
+	if len(s.Modelo) == 0 {
+		http.Error(w, "Modelo requerido.", http.StatusBadRequest)
+		return
+	}
+
+	if len(s.Nombre) == 0 {
+		http.Error(w, "Nombre requerido.", http.StatusBadRequest)
+		return
+	}
+
+	if s.Lat == 0 || s.Lng == 0 {
+		http.Error(w, "Debe especificar latitud y longitud.", http.StatusBadRequest)
+		return
+	}
+
 	if s.IdSwitch.Hex() == "000000000000000000000000" {
 		http.Error(w, "No se especifico un ID de switch a modificar.", http.StatusBadRequest)
 		return
@@ -113,8 +145,8 @@ func ModificarSwitch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(s.Nombre) > 0 {
-		_, duplicateSwitch, _ := db.NombreDuplicado(s.Nombre)
-		if duplicateSwitch {
+		switchBD, duplicateSwitch, _ := db.NombreDuplicado(s.Nombre)
+		if duplicateSwitch && switchBD.IdSwitch.Hex() != s.IdSwitch.Hex() {
 			http.Error(w, "Ya existe un switch con ese nombre.", http.StatusBadRequest)
 			return
 		}
@@ -125,10 +157,6 @@ func ModificarSwitch(w http.ResponseWriter, r *http.Request) {
 		switchModificado["modelo"] = s.Modelo
 	}
 
-	if s.Lat == 0 || s.Lng == 0 {
-		http.Error(w, "Debe especificar latitud y longitud.", http.StatusBadRequest)
-		return
-	}
 	switchModificado["lat"] = s.Lat
 	switchModificado["lng"] = s.Lng
 	switchModificado["fecha"] = time.Now()
