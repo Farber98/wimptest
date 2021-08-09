@@ -31,7 +31,7 @@ func NombreDuplicado(nombre string) (structs.Switches, bool, string) {
 }
 
 /* Chequea si el ID ya existe en la BD. Evalua padre V o F segun se requiera pid o id respectivamente.*/
-func ExisteId(ID primitive.ObjectID, evaluaPadre bool) (structs.Switches, bool, string) {
+func ExisteIdSwitches(ID primitive.ObjectID, evaluaPadre bool) (structs.Switches, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	var condition primitive.M

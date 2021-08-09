@@ -27,6 +27,7 @@ func main() {
 	/* Asigno el logger al router */
 	loggedRouter := loggingMiddleware(router)
 
+	/* 	go db.TriggerAlerta() */
 	/* Corro el SV. */
 	PORT := os.Getenv("PORT")
 	if PORT == "" {

@@ -6,6 +6,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type SwitchWrapper struct {
+	Switch Switches
+}
+
 type Switches struct {
 	IdSwitch primitive.ObjectID `bson:"_id,omitempty" json:"idSwitch"`
 	IdPadre  primitive.ObjectID `bson:"_pid,omitempty" json:"idPadre"`

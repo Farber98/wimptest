@@ -4,3 +4,4 @@ const DB_HOST = "mongodb+srv://juantuc98:juantuc98@db-wimp.yeslm.mongodb.net/myF
 const DB_NOMBRE = "wimp"
 const COL_USUARIOS = "usuarios"
 const COL_SWITCHES = "switches"
+const COL_ALERTAS = "alertas"

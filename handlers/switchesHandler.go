@@ -50,7 +50,7 @@ func CrearSwitch(w http.ResponseWriter, r *http.Request) {
 
 	/* 000... es el valor vacio de _pid */
 	if s.IdPadre.Hex() != "000000000000000000000000" {
-		_, parentID, _ := db.ExisteId(s.IdPadre, false)
+		_, parentID, _ := db.ExisteIdSwitches(s.IdPadre, false)
 		if !parentID {
 			http.Error(w, "No existe un padre con ese ID.", http.StatusBadRequest)
 			return
@@ -127,7 +127,7 @@ func ModificarSwitch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, modifyID, _ := db.ExisteId(s.IdSwitch, false)
+	_, modifyID, _ := db.ExisteIdSwitches(s.IdSwitch, false)
 	if !modifyID {
 		http.Error(w, "No existe un switch con ese ID.", http.StatusBadRequest)
 		return
@@ -136,7 +136,7 @@ func ModificarSwitch(w http.ResponseWriter, r *http.Request) {
 	switchModificado := make(map[string]interface{})
 
 	if s.IdPadre.Hex() != "000000000000000000000000" {
-		_, parentID, _ := db.ExisteId(s.IdPadre, false)
+		_, parentID, _ := db.ExisteIdSwitches(s.IdPadre, false)
 		if !parentID {
 			http.Error(w, "No existe un padre con ese ID.", http.StatusBadRequest)
 			return
@@ -184,13 +184,13 @@ func BorrarSwitch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	objID, _ := primitive.ObjectIDFromHex(IdSwitch)
-	_, deleteID, _ := db.ExisteId(objID, false)
+	_, deleteID, _ := db.ExisteIdSwitches(objID, false)
 	if !deleteID {
 		http.Error(w, "No existe un switch con ese ID.", http.StatusBadRequest)
 		return
 	}
 
-	_, parentID, _ := db.ExisteId(objID, true)
+	_, parentID, _ := db.ExisteIdSwitches(objID, true)
 	if parentID {
 		http.Error(w, "No se puede borrar un switch que tiene hijos asociados.", http.StatusBadRequest)
 		return
@@ -224,7 +224,7 @@ func ActivarSwitch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Check if ID exists */
-	_, exists, _ := db.ExisteId(s.IdSwitch, false)
+	_, exists, _ := db.ExisteIdSwitches(s.IdSwitch, false)
 	if !exists {
 		http.Error(w, "No existe un switch con ese ID.", http.StatusBadRequest)
 		return
@@ -272,7 +272,7 @@ func DesactivarSwitch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Check if ID exists */
-	_, exists, _ := db.ExisteId(s.IdSwitch, false)
+	_, exists, _ := db.ExisteIdSwitches(s.IdSwitch, false)
 	if !exists {
 		http.Error(w, "No existe un switch con ese ID.", http.StatusBadRequest)
 		return
