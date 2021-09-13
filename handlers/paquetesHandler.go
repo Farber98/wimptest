@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/Farber98/WIMP/db"
+	"github.com/Farber98/WIMP/structs"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func ListarSrcMacMayorEmision(w http.ResponseWriter, r *http.Request) {
@@ -38,6 +40,25 @@ func ListarProtocolosRedMayorEmision(w http.ResponseWriter, r *http.Request) {
 
 	results := db.DameProtocolosRedMayorEmision()
 
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(results)
+}
+
+func ListarSrcMacDetalle(w http.ResponseWriter, r *http.Request) {
+	var mac structs.Paquetes
+	var results []primitive.M
+	err := json.NewDecoder(r.Body).Decode(&mac)
+	if err != nil {
+		http.Error(w, "Datos incorrectos."+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	results = db.DameSrcMacPaquetes(mac.SrcMac)
+	results = append(results, db.DameSrcMacProtoIp(mac.SrcMac)...)
+	results = append(results, db.DameSrcMacProtoTp(mac.SrcMac)...)
+	results = append(results, db.DameSrcMacProtoApp(mac.SrcMac)...)
+	results = append(results, db.DameSrcMacBytes(mac.SrcMac)...)
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(results)

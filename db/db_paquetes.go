@@ -152,3 +152,183 @@ func DameProtocolosRedMayorEmision() []primitive.M {
 	return results
 
 }
+
+/* Devuelve la cantidad de paquetes dada una $srcMac */
+func DameSrcMacPaquetes(mac string) []primitive.M {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	db := MongoCN.Database(DB_NOMBRE)
+	coll := db.Collection(COL_PAQUETES)
+
+	var results []primitive.M
+
+	matchStage := bson.D{{"$match", bson.D{{"srcmac", mac}}}}
+	groupStage := bson.D{{"$group", bson.D{{"_id", "paquetes"}, {"cant", bson.D{{"$sum", 1}}}}}}
+	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{matchStage, groupStage})
+	if err != nil {
+		return results
+	}
+
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return results
+		}
+		results = append(results, result)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return results
+	}
+
+	cursor.Close(context.Background())
+
+	return results
+
+}
+
+/* Devuelve la cantidad de paquetes Ip dada una $srcMac */
+func DameSrcMacProtoIp(mac string) []primitive.M {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	db := MongoCN.Database(DB_NOMBRE)
+	coll := db.Collection(COL_PAQUETES)
+
+	var results []primitive.M
+
+	matchStage := bson.D{{"$match", bson.D{{"srcmac", mac}}}}
+	groupStage := bson.D{{"$group", bson.D{{"_id", "$protoip"}, {"cant", bson.D{{"$sum", 1}}}}}}
+	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{matchStage, groupStage})
+	if err != nil {
+		return results
+	}
+
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return results
+		}
+		results = append(results, result)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return results
+	}
+
+	cursor.Close(context.Background())
+
+	return results
+
+}
+
+/* Devuelve la cantidad de paquetes App dada una $srcMac */
+func DameSrcMacProtoApp(mac string) []primitive.M {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	db := MongoCN.Database(DB_NOMBRE)
+	coll := db.Collection(COL_PAQUETES)
+
+	var results []primitive.M
+
+	matchStage := bson.D{{"$match", bson.D{{"srcmac", mac}}}}
+	groupStage := bson.D{{"$group", bson.D{{"_id", "$protoapp"}, {"cant", bson.D{{"$sum", 1}}}}}}
+	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{matchStage, groupStage})
+	if err != nil {
+		return results
+	}
+
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return results
+		}
+		results = append(results, result)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return results
+	}
+
+	cursor.Close(context.Background())
+
+	return results
+
+}
+
+/* Devuelve la cantidad de paquetes Tp dada una $srcMac */
+func DameSrcMacProtoTp(mac string) []primitive.M {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	db := MongoCN.Database(DB_NOMBRE)
+	coll := db.Collection(COL_PAQUETES)
+
+	var results []primitive.M
+
+	matchStage := bson.D{{"$match", bson.D{{"srcmac", mac}}}}
+	groupStage := bson.D{{"$group", bson.D{{"_id", "$prototp"}, {"cant", bson.D{{"$sum", 1}}}}}}
+	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{matchStage, groupStage})
+	if err != nil {
+		return results
+	}
+
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return results
+		}
+		results = append(results, result)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return results
+	}
+
+	cursor.Close(context.Background())
+
+	return results
+
+}
+
+/* Devuelve la cantidad de bytes transmitidos dada una $srcMac */
+func DameSrcMacBytes(mac string) []primitive.M {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	db := MongoCN.Database(DB_NOMBRE)
+	coll := db.Collection(COL_PAQUETES)
+
+	var results []primitive.M
+
+	matchStage := bson.D{{"$match", bson.D{{"srcmac", mac}}}}
+	groupStage := bson.D{{"$group", bson.D{{"_id", "bytes"}, {"cant", bson.D{{"$sum", "$length"}}}}}}
+	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{matchStage, groupStage})
+	if err != nil {
+		return results
+	}
+
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return results
+		}
+		results = append(results, result)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return results
+	}
+
+	cursor.Close(context.Background())
+
+	return results
+
+}

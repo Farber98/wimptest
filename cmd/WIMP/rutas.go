@@ -38,5 +38,6 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 	r.HandleFunc("/paquetes/protoapp-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarProtocolosAplicacionMayorEmision))).Methods("GET")
 	r.HandleFunc("/paquetes/prototp-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarProtocolosTransporteMayorEmision))).Methods("GET")
 	r.HandleFunc("/paquetes/protored-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarProtocolosRedMayorEmision))).Methods("GET")
+	r.HandleFunc("/paquetes/srcmac-detalle", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarSrcMacDetalle))).Methods("GET")
 	return headers, origins, methods, r
 }
