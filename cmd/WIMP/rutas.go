@@ -32,5 +32,11 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 	/* Alertas */
 	r.HandleFunc("/alertas", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerAlertas))).Methods("GET")
 	r.HandleFunc("/alertas/confirmar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ConfirmarAlerta))).Methods("DELETE")
+
+	/* Paquetes */
+	r.HandleFunc("/paquetes/srcmac-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarSrcMacMayorEmision))).Methods("GET")
+	r.HandleFunc("/paquetes/protoapp-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarProtocolosAplicacionMayorEmision))).Methods("GET")
+	r.HandleFunc("/paquetes/prototp-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarProtocolosTransporteMayorEmision))).Methods("GET")
+	r.HandleFunc("/paquetes/protored-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarProtocolosRedMayorEmision))).Methods("GET")
 	return headers, origins, methods, r
 }
