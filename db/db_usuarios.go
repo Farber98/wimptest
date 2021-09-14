@@ -52,6 +52,31 @@ func UsuarioDuplicado(nombre string) (structs.Usuarios, bool, string) {
 	return result, true, ID
 }
 
+/* Chequea si un usuario es admin */
+func EsAdmin(nombre string) bool {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	db := MongoCN.Database(DB_NOMBRE)
+	coll := db.Collection(COL_USUARIOS)
+
+	condition := bson.M{
+		"$and": []bson.M{
+			{"usuario": nombre},
+			{"admin": true},
+		},
+	}
+
+	var result structs.Usuarios
+
+	err := coll.FindOne(ctx, condition).Decode(&result)
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
 /* Crea usuario en la BD. */
 func CrearUsuario(usuario structs.Usuarios) (string, bool, error) {
 
@@ -71,7 +96,7 @@ func CrearUsuario(usuario structs.Usuarios) (string, bool, error) {
 }
 
 /* Autentica usuario ante la BD. Utilizado por IniciarSesion. */
-func IniciarSesion(usuario string, password string) (structs.Usuarios, bool) {
+func IniciarSesion(usuario string, password string, chequeaAdmin bool) (structs.Usuarios, bool) {
 
 	/* Chequea que el nombre de usuario exista. Misma operacion que usuario duplicado. */
 	u, exists, _ := UsuarioDuplicado(usuario)
@@ -85,6 +110,13 @@ func IniciarSesion(usuario string, password string) (structs.Usuarios, bool) {
 	err := bcrypt.CompareHashAndPassword(dbPassword, inputPassword)
 	if err != nil {
 		return u, false
+	}
+
+	if chequeaAdmin {
+		admin := EsAdmin(u.Usuario)
+		if !admin {
+			return u, false
+		}
 	}
 
 	return u, true

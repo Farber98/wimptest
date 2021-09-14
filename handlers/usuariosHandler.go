@@ -11,20 +11,36 @@ import (
 	"github.com/Farber98/WIMP/structs"
 )
 
-/* Crea un usuario nuevo. */
+/* Crea un usuario nuevo, si tiene los permisos necesarios. */
 func CrearUsuario(w http.ResponseWriter, r *http.Request) {
 	var usuario structs.Usuarios
-
-	err := json.NewDecoder(r.Body).Decode(&usuario)
+	var crearUsuario structs.CrearUsuario
+	err := json.NewDecoder(r.Body).Decode(&crearUsuario)
 	if err != nil {
 		http.Error(w, " Error: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
+	usuario.Usuario = crearUsuario.Usuario
+	usuario.Email = crearUsuario.Email
+	usuario.Password = crearUsuario.Password
+
 	/* Sanitizamos */
+	crearUsuario.UsuarioAdmin = strings.TrimSpace(crearUsuario.UsuarioAdmin)
+	crearUsuario.PasswordAdmin = strings.TrimSpace(crearUsuario.PasswordAdmin)
 	usuario.Usuario = strings.TrimSpace(usuario.Usuario)
 	usuario.Email = strings.TrimSpace(usuario.Email)
 	usuario.Password = strings.TrimSpace(usuario.Password)
+
+	if len(crearUsuario.UsuarioAdmin) == 0 {
+		http.Error(w, "El usuario administrador es requerido.", http.StatusBadRequest)
+		return
+	}
+
+	if len(crearUsuario.PasswordAdmin) == 0 {
+		http.Error(w, "La contraseña del administrador es requerida.", http.StatusBadRequest)
+		return
+	}
 
 	if len(usuario.Email) == 0 {
 		http.Error(w, "Email requerido.", http.StatusBadRequest)
@@ -55,6 +71,13 @@ func CrearUsuario(w http.ResponseWriter, r *http.Request) {
 	_, duplicateUsername, _ := db.UsuarioDuplicado(usuario.Usuario)
 	if duplicateUsername {
 		http.Error(w, "Ya existe un usuario registrado con ese nombre de usuario.", http.StatusBadRequest)
+		return
+	}
+
+	/* Chequeamos permisos */
+	_, exists := db.IniciarSesion(crearUsuario.UsuarioAdmin, crearUsuario.PasswordAdmin, true)
+	if !exists {
+		http.Error(w, "Nombre de usuario, contraseña y/o permisos de administrador incorrectos.", http.StatusBadRequest)
 		return
 	}
 
@@ -96,7 +119,7 @@ func IniciarSesion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	document, exists := db.IniciarSesion(u.Usuario, u.Password)
+	document, exists := db.IniciarSesion(u.Usuario, u.Password, false)
 	if !exists {
 		http.Error(w, "Nombre de usuario y/o contraseña erroneos.", http.StatusBadRequest)
 		return

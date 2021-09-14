@@ -18,6 +18,15 @@ func ListarSrcMacMayorEmision(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(results)
 }
 
+func ListarSrcIpMayorEmision(w http.ResponseWriter, r *http.Request) {
+
+	results := db.DameSrcIpMayorEmision()
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(results)
+}
+
 func ListarProtocolosAplicacionMayorEmision(w http.ResponseWriter, r *http.Request) {
 
 	results := db.DameProtocolosAplicacionMayorEmision()
@@ -57,8 +66,10 @@ func ListarSrcMacDetalle(w http.ResponseWriter, r *http.Request) {
 	results = db.DameSrcMacPaquetes(mac.SrcMac)
 	results = append(results, db.DameSrcMacProtoIp(mac.SrcMac)...)
 	results = append(results, db.DameSrcMacProtoTp(mac.SrcMac)...)
-	results = append(results, db.DameSrcMacProtoApp(mac.SrcMac)...)
 	results = append(results, db.DameSrcMacBytes(mac.SrcMac)...)
+	results = append(results, db.DameSrcMacProtoApp(mac.SrcMac)...)
+	results = append(results, db.DameDstPort(mac.SrcMac)...)
+	results = append(results, db.DameDstIp(mac.SrcMac)...)
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(results)
