@@ -1,3 +1,3 @@
 package main
 
-const SV_PORT = "8000"
+const SV_PORT = "49160"
