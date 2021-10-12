@@ -19,9 +19,11 @@ func DameSrcMacMayorEmision() []primitive.M {
 
 	var results []primitive.M
 
-	projectStage := bson.D{{"$project", bson.D{{"srcmac", 1}}}}
-	groupStage := bson.D{{"$group", bson.D{{"_id", "$srcmac"}, {"total", bson.D{{"$sum", 1}}}}}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, groupStage})
+	projectStage := bson.D{{"$project", bson.D{{"srcmac", 1}, {"length", 1}}}}
+	groupStage := bson.D{{"$group", bson.D{{"_id", "$srcmac"}, {"paquetes", bson.D{{"$sum", 1}}}, {"bytes", bson.D{{"$sum", "$length"}}}}}}
+	sortStage := bson.D{{"$sort", bson.D{{"bytes", -1}, {"paquetes", -1}}}}
+	limitStage := bson.D{{"$limit", 10}}
+	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, groupStage, sortStage, limitStage})
 	if err != nil {
 		return results
 	}
