@@ -23,7 +23,6 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 
 	/* Switches */
 	r.HandleFunc("/switches/crear", midl.ValidarJwt(midl.ChequeoDB(manejadores.CrearSwitch))).Methods("POST")
-	r.HandleFunc("/switches/topologia", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerTopologia))).Methods("GET")
 	r.HandleFunc("/switches/modificar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ModificarSwitch))).Methods("PUT")
 	r.HandleFunc("/switches/borrar", midl.ValidarJwt(midl.ChequeoDB(manejadores.BorrarSwitch))).Methods("DELETE")
 	r.HandleFunc("/switches/activar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ActivarSwitch))).Methods("PUT")
@@ -40,5 +39,9 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 	r.HandleFunc("/paquetes/prototp-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarProtocolosTransporteMayorEmision))).Methods("GET")
 	r.HandleFunc("/paquetes/protoip-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarProtocolosRedMayorEmision))).Methods("GET")
 	r.HandleFunc("/paquetes/srcmac-detalle", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarSrcMacDetalle))).Methods("GET")
+
+	/* Topologia */
+	r.HandleFunc("/topologia", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerTopologia))).Methods("GET")
+
 	return headers, origins, methods, r
 }

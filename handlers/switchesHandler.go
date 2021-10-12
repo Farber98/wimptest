@@ -78,21 +78,6 @@ func CrearSwitch(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-/* Devuelve todos los switches en formato JSON. */
-func VerTopologia(w http.ResponseWriter, r *http.Request) {
-
-	results, status := db.DameTopologia()
-	if !status {
-		http.Error(w, "Error al traer la topologia. ", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(results)
-
-}
-
 /* 	Permite modificar nombre, modelo y padre de un Switch existente. Actualiza marca de tiempo. */
 func ModificarSwitch(w http.ResponseWriter, r *http.Request) {
 	var s structs.Switches
