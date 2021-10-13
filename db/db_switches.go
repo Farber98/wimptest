@@ -6,11 +6,35 @@ import (
 
 	"github.com/Farber98/WIMP/structs"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+/* Ubica un switch pasandole Mac, Lat y Long. */
+func UbicarSwitch(s structs.Switches) interface{} {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	db := MongoCN.Database(DB_NOMBRE)
+	col := db.Collection(COL_SWITCHES)
+	filter := bson.D{{"mac", s.Mac}}
+	update := bson.D{
+		{"$set",
+			bson.D{
+				{"lat", s.Lat},
+				{"lng", s.Lng},
+			},
+		},
+	}
+
+	_, err := col.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 /* Chequea si el nombre de un switch ya existe en la bd */
-func NombreDuplicado(nombre string) (structs.Switches, bool, string) {
+/* func NombreDuplicado(nombre string) (structs.Switches, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -28,10 +52,10 @@ func NombreDuplicado(nombre string) (structs.Switches, bool, string) {
 	}
 
 	return result, true, ID
-}
+} */
 
 /* Chequea si el ID ya existe en la BD. Evalua padre V o F segun se requiera pid o id respectivamente.*/
-func ExisteIdSwitches(ID primitive.ObjectID, evaluaPadre bool) (structs.Switches, bool, string) {
+/* func ExisteIdSwitches(ID primitive.ObjectID, evaluaPadre bool) (structs.Switches, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	var condition primitive.M
@@ -51,10 +75,10 @@ func ExisteIdSwitches(ID primitive.ObjectID, evaluaPadre bool) (structs.Switches
 	}
 
 	return result, true, PID
-}
+} */
 
 /* Crea el Switch en la db. */
-func CrearSwitch(s structs.Switches) (string, bool, error) {
+/* func CrearSwitch(s structs.Switches) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -68,10 +92,10 @@ func CrearSwitch(s structs.Switches) (string, bool, error) {
 
 	objID, _ := result.InsertedID.(primitive.ObjectID)
 	return objID.String(), true, nil
-}
+} */
 
 /* Modifica un switch. */
-func ModificarSwitch(IdSwitch primitive.ObjectID, switchModificado interface{}) (bool, error) {
+/* func ModificarSwitch(IdSwitch primitive.ObjectID, switchModificado interface{}) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -92,10 +116,10 @@ func ModificarSwitch(IdSwitch primitive.ObjectID, switchModificado interface{}) 
 	}
 
 	return true, nil
-}
+} */
 
 /* Borra un switch por ID. */
-func BorrarSwitch(ID string) error {
+/* func BorrarSwitch(ID string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -109,10 +133,10 @@ func BorrarSwitch(ID string) error {
 	_, err := col.DeleteOne(ctx, condition)
 	return err
 
-}
+} */
 
 /* Chequea si un Switch ya esta activo. */
-func EstaActivo(ID primitive.ObjectID) (structs.Switches, bool, string) {
+/* func EstaActivo(ID primitive.ObjectID) (structs.Switches, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -132,10 +156,10 @@ func EstaActivo(ID primitive.ObjectID) (structs.Switches, bool, string) {
 	}
 
 	return result, true, PID
-}
+} */
 
 /* Chequea si un hijo de un switch a desactivar esta en estado activo. */
-func HijoActivo(ID primitive.ObjectID) (structs.Switches, bool, string) {
+/* func HijoActivo(ID primitive.ObjectID) (structs.Switches, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	db := MongoCN.Database(DB_NOMBRE)
@@ -154,4 +178,4 @@ func HijoActivo(ID primitive.ObjectID) (structs.Switches, bool, string) {
 	}
 
 	return result, true, PID
-}
+} */
