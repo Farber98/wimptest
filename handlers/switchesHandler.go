@@ -9,6 +9,21 @@ import (
 	"github.com/Farber98/WIMP/structs"
 )
 
+/* Devuelve todas las alertas. */
+func VerSwitches(w http.ResponseWriter, r *http.Request) {
+
+	results, status := db.DameSwitches()
+	if !status {
+		http.Error(w, "Error al traer los switches. ", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(results)
+
+}
+
 func UbicarSwitch(w http.ResponseWriter, r *http.Request) {
 	var s structs.Switches
 

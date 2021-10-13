@@ -3,11 +3,13 @@ package manejadores
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	"github.com/Farber98/WIMP/db"
+	"github.com/Farber98/WIMP/structs"
 )
 
-/* Devuelve todos los switches en formato JSON. */
+/* Devuelve todas las alertas. */
 func VerAlertas(w http.ResponseWriter, r *http.Request) {
 
 	results, status := db.DameAlertas()
@@ -20,6 +22,38 @@ func VerAlertas(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(results)
 
+}
+
+func RankingAlertasPorMac(w http.ResponseWriter, r *http.Request) {
+
+	results := db.RankingAlertasPorMac()
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(results)
+
+}
+
+func AlertasPorMac(w http.ResponseWriter, r *http.Request) {
+	var s structs.Switches
+	err := json.NewDecoder(r.Body).Decode(&s)
+	if err != nil {
+		http.Error(w, "Datos incorrectos."+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	//Sanitizamos
+	s.Mac = strings.TrimSpace(s.Mac)
+	if s.Mac == "" {
+		http.Error(w, "Debe especificar un dispositivo.", http.StatusBadRequest)
+		return
+	}
+
+	results := db.DameSrcMacAlertas(s.Mac)
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(results)
 }
 
 /* Permite borrar un switch siempre y cuando no tenga hijos asociados. */

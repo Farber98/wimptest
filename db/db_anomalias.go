@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 /* Devuelve todas las Anomalias */
@@ -19,7 +20,7 @@ func DameAnomalias() ([]primitive.M, bool) {
 
 	var results []primitive.M
 
-	cursor, err := coll.Find(ctx, bson.M{})
+	cursor, err := coll.Find(ctx, bson.M{}, options.Find().SetSort(bson.D{{"timestamp", -1}}))
 	if err != nil {
 		return results, false
 	}

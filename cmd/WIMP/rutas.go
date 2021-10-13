@@ -27,10 +27,13 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 	r.HandleFunc("/switches/borrar", midl.ValidarJwt(midl.ChequeoDB(manejadores.BorrarSwitch))).Methods("DELETE")
 	r.HandleFunc("/switches/activar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ActivarSwitch))).Methods("PUT")
 	r.HandleFunc("/switches/desactivar", midl.ValidarJwt(midl.ChequeoDB(manejadores.DesactivarSwitch))).Methods("PUT") */
+	r.HandleFunc("/switches", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerSwitches))).Methods("GET")
 	r.HandleFunc("/switches/ubicar", midl.ValidarJwt(midl.ChequeoDB(manejadores.UbicarSwitch))).Methods("PATCH")
 
 	/* Alertas */
 	r.HandleFunc("/alertas", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerAlertas))).Methods("GET")
+	r.HandleFunc("/alertas/ranking", midl.ValidarJwt(midl.ChequeoDB(manejadores.RankingAlertasPorMac))).Methods("GET")
+	r.HandleFunc("/alertas/mac", midl.ValidarJwt(midl.ChequeoDB(manejadores.AlertasPorMac))).Methods("GET")
 	//r.HandleFunc("/alertas/confirmar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ConfirmarAlerta))).Methods("DELETE")
 
 	/* Paquetes */
