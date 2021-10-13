@@ -31,7 +31,7 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 
 	/* Alertas */
 	r.HandleFunc("/alertas", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerAlertas))).Methods("GET")
-	r.HandleFunc("/alertas/confirmar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ConfirmarAlerta))).Methods("DELETE")
+	//r.HandleFunc("/alertas/confirmar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ConfirmarAlerta))).Methods("DELETE")
 
 	/* Paquetes */
 	r.HandleFunc("/paquetes/srcmac-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarSrcMacMayorEmision))).Methods("GET")
@@ -43,6 +43,11 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 
 	/* Topologia */
 	r.HandleFunc("/topologia", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerTopologia))).Methods("GET")
+
+	/* Anomalias */
+	r.HandleFunc("/anomalias", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerAnomalias))).Methods("GET")
+	r.HandleFunc("/anomalias/ranking", midl.ValidarJwt(midl.ChequeoDB(manejadores.RankingAnomaliasPorMac))).Methods("GET")
+	r.HandleFunc("/anomalias/mac", midl.ValidarJwt(midl.ChequeoDB(manejadores.AnomaliasPorMac))).Methods("GET")
 
 	return headers, origins, methods, r
 }

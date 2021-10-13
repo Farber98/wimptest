@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/Farber98/WIMP/db"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 /* Devuelve todos los switches en formato JSON. */
@@ -24,7 +23,7 @@ func VerAlertas(w http.ResponseWriter, r *http.Request) {
 }
 
 /* Permite borrar un switch siempre y cuando no tenga hijos asociados. */
-func ConfirmarAlerta(w http.ResponseWriter, r *http.Request) {
+/* func ConfirmarAlerta(w http.ResponseWriter, r *http.Request) {
 	IdAlerta := r.URL.Query().Get("idAlerta")
 	if len(IdAlerta) < 1 {
 		http.Error(w, "Debe enviar el parametro ID del switch.", http.StatusBadRequest)
@@ -46,4 +45,4 @@ func ConfirmarAlerta(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-}
+} */

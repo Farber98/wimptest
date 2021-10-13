@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/Farber98/WIMP/structs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -70,7 +69,7 @@ func DameAlertas() ([]primitive.M, bool) {
 }
 
 /* Borra un switch por ID. */
-func ConfirmarAlerta(ID string) error {
+/* func ConfirmarAlerta(ID string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -84,10 +83,10 @@ func ConfirmarAlerta(ID string) error {
 	_, err := col.DeleteOne(ctx, condition)
 	return err
 
-}
+} */
 
 /* Chequea si el ID de la alerta ya existe en la BD.*/
-func ExisteIdAlertas(ID primitive.ObjectID) (structs.Alertas, bool, string) {
+/* func ExisteIdAlertas(ID primitive.ObjectID) (structs.Alertas, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	var condition primitive.M
@@ -102,4 +101,4 @@ func ExisteIdAlertas(ID primitive.ObjectID) (structs.Alertas, bool, string) {
 	}
 
 	return result, true, PID
-}
+} */
