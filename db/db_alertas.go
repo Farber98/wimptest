@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-/* Trae todos los switches de la DB */
+/* Trae todos los Sw de la BD. */
 func DameAlertas() ([]primitive.M, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -43,7 +43,7 @@ func DameAlertas() ([]primitive.M, bool) {
 	return results, true
 }
 
-/* Devuelve Ranking de Anomalias segun $Srcmac */
+/* Devuelve Ranking de alertas segun $Srcmac. Ordena por cantidad desc. Limita 20. */
 func RankingAlertasPorMac() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -80,7 +80,7 @@ func RankingAlertasPorMac() []primitive.M {
 	return results
 }
 
-/* Devuelve anomalias de una SrcMac */
+/* Devuelve todas las anomalias dada una $Srcmac. Ordena por timestamp desc. */
 func DameSrcMacAlertas(mac string) []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

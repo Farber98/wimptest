@@ -13,7 +13,7 @@ import (
 	log "github.com/go-kit/kit/log"
 )
 
-// Wrapper para agarrar el estado HTTP y logearlo.
+/* Wrappers para agarrar el estado HTTP y logearlo. */
 type responseWriter struct {
 	http.ResponseWriter
 	status      int
@@ -39,7 +39,7 @@ func (rw *responseWriter) WriteHeader(code int) {
 
 }
 
-// Logea las peticiones HTTP y su duracion.
+/* Logea las peticiones HTTP y su duracion. */
 func LoggingMiddleware(logger log.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {

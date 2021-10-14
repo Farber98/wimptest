@@ -10,7 +10,7 @@ import (
 func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSOption, *mux.Router) {
 	r := mux.NewRouter()
 
-	/* Configuracion general */
+	/* Configuracion del router */
 	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "DELETE", "PATCH"})
 	origins := handlers.AllowedOrigins([]string{"*"})
@@ -22,19 +22,19 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 	r.HandleFunc("/usuarios/iniciar-sesion", midl.ChequeoDB((manejadores.IniciarSesion))).Methods("POST")
 
 	/* Switches */
-	/* r.HandleFunc("/switches/crear", midl.ValidarJwt(midl.ChequeoDB(manejadores.CrearSwitch))).Methods("POST")
-	r.HandleFunc("/switches/modificar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ModificarSwitch))).Methods("PUT")
-	r.HandleFunc("/switches/borrar", midl.ValidarJwt(midl.ChequeoDB(manejadores.BorrarSwitch))).Methods("DELETE")
-	r.HandleFunc("/switches/activar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ActivarSwitch))).Methods("PUT")
-	r.HandleFunc("/switches/desactivar", midl.ValidarJwt(midl.ChequeoDB(manejadores.DesactivarSwitch))).Methods("PUT") */
+	//r.HandleFunc("/switches/crear", midl.ValidarJwt(midl.ChequeoDB(manejadores.CrearSwitch))).Methods("POST")
+	//r.HandleFunc("/switches/modificar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ModificarSwitch))).Methods("PUT")
+	//r.HandleFunc("/switches/borrar", midl.ValidarJwt(midl.ChequeoDB(manejadores.BorrarSwitch))).Methods("DELETE")
+	//r.HandleFunc("/switches/activar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ActivarSwitch))).Methods("PUT")
+	//r.HandleFunc("/switches/desactivar", midl.ValidarJwt(midl.ChequeoDB(manejadores.DesactivarSwitch))).Methods("PUT")
 	r.HandleFunc("/switches", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerSwitches))).Methods("GET")
 	r.HandleFunc("/switches/ubicar", midl.ValidarJwt(midl.ChequeoDB(manejadores.UbicarSwitch))).Methods("PATCH")
 
 	/* Alertas */
+	//r.HandleFunc("/alertas/confirmar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ConfirmarAlerta))).Methods("DELETE")
 	r.HandleFunc("/alertas", midl.ValidarJwt(midl.ChequeoDB(manejadores.VerAlertas))).Methods("GET")
 	r.HandleFunc("/alertas/ranking", midl.ValidarJwt(midl.ChequeoDB(manejadores.RankingAlertasPorMac))).Methods("GET")
 	r.HandleFunc("/alertas/mac", midl.ValidarJwt(midl.ChequeoDB(manejadores.AlertasPorMac))).Methods("GET")
-	//r.HandleFunc("/alertas/confirmar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ConfirmarAlerta))).Methods("DELETE")
 
 	/* Paquetes */
 	r.HandleFunc("/paquetes/srcmac-emision", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarSrcMacMayorEmision))).Methods("GET")

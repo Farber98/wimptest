@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-/* Devuelve todas las Anomalias */
+/* Devuelve todas las Anomalias de la bd*/
 func DameAnomalias() ([]primitive.M, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -43,7 +43,7 @@ func DameAnomalias() ([]primitive.M, bool) {
 	return results, true
 }
 
-/* Devuelve Ranking de Anomalias segun $Srcmac */
+/* Devuelve Ranking de Anomalias segun $Srcmac. Ordena por cantidad desc. Limita 20. */
 func RankingAnomaliasPorMac() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -80,7 +80,7 @@ func RankingAnomaliasPorMac() []primitive.M {
 	return results
 }
 
-/* Devuelve anomalias de una SrcMac */
+/* Devuelve anomalias dada una $Srcmac. Limita 20. */
 func DameSrcMacAnomalias(mac string) []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-/* Ubica un switch pasandole Mac, Lat y Long. */
+/* Setea Lat y Long a un switch. Busca por MAC. */
 func UbicarSwitch(s structs.Switches) interface{} {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

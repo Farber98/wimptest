@@ -54,7 +54,6 @@ func ListarProtocolosRedMayorEmision(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(results)
 }
 
-/* Metodo que lista la emision y las ip destino dada una $srcMac */
 func ListarSrcMacDetalle(w http.ResponseWriter, r *http.Request) {
 	var mac structs.Paquetes
 	var results []primitive.M
@@ -64,11 +63,11 @@ func ListarSrcMacDetalle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	results = db.DameSrcMacEmision(mac.SrcMac)
 	//results = append(results, db.DameSrcMacProtoIp(mac.SrcMac)...)
 	//results = append(results, db.DameSrcMacProtoTp(mac.SrcMac)...)
 	//results = append(results, db.DameSrcMacProtoApp(mac.SrcMac)...)
 	//results = append(results, db.DameDstPort(mac.SrcMac)...)
+	results = db.DameSrcMacEmision(mac.SrcMac)
 	results = append(results, db.DameDstIp(mac.SrcMac)...)
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)

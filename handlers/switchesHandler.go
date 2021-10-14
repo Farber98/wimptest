@@ -9,7 +9,6 @@ import (
 	"github.com/Farber98/WIMP/structs"
 )
 
-/* Devuelve todas las alertas. */
 func VerSwitches(w http.ResponseWriter, r *http.Request) {
 
 	results, status := db.DameSwitches()

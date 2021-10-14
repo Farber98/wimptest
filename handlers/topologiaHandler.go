@@ -7,7 +7,6 @@ import (
 	"github.com/Farber98/WIMP/db"
 )
 
-/* Devuelve todos los switches en formato JSON. */
 func VerTopologia(w http.ResponseWriter, r *http.Request) {
 
 	results, status := db.DameTopologia()

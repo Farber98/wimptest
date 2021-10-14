@@ -12,23 +12,24 @@ import (
 
 func main() {
 
-	/* Cargo configuracion del router. */
+	/* Configuracion del router. */
 	headers, methods, origins, router := configuroRouter()
 
-	/* Configuro el logger */
+	/* Configuracion logger */
 	var logger log.Logger
 	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	stdlog.SetOutput(log.NewStdlibAdapter(logger))
 	logger = log.With(logger, "ts", log.DefaultTimestamp, "loc", log.DefaultCaller)
 
-	/* Asigno el middleware */
+	/* Asignacion middleware */
 	loggingMiddleware := midl.LoggingMiddleware(logger)
 
-	/* Asigno el logger al router */
+	/* Vinculamos logger al router */
 	loggedRouter := loggingMiddleware(router)
 
-	/* 	go db.TriggerAlerta() */
-	/* Corro el SV. */
+	//go db.TriggerAlerta()
+
+	/* Corremos SV. */
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
 		PORT = SV_PORT

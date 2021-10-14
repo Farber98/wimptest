@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-/* Devuelve la cantidad de paquetes con $srcMac */
+/* Devuelve la cantidad de paquetes y bytes transmitidos con $srcMac. Ordena por bytes y paquetes desc. Limita 20.  */
 func DameSrcMacMayorEmision() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -47,7 +47,7 @@ func DameSrcMacMayorEmision() []primitive.M {
 
 }
 
-/* Devuelve la cantidad de paquetes con $srcMac */
+/* Devuelve la cantidad de paquetes y bytes transmitidos con $srcIp. Ordena por bytes y paquetes desc. Limita 20.  */
 func DameSrcIpMayorEmision() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -85,7 +85,7 @@ func DameSrcIpMayorEmision() []primitive.M {
 
 }
 
-/* Devuelve la cantidad de paquetes con $ProtoApp */
+/* Devuelve la cantidad de paquetes con $ProtoApp . Ordena por total desc.*/
 func DameProtocolosAplicacionMayorEmision() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -122,7 +122,7 @@ func DameProtocolosAplicacionMayorEmision() []primitive.M {
 
 }
 
-/* Devuelve la cantidad de paquetes con $ProtoTp */
+/* Devuelve la cantidad de paquetes con $ProtoTp. Ordena por total desc. */
 func DameProtocolosTransporteMayorEmision() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -159,7 +159,7 @@ func DameProtocolosTransporteMayorEmision() []primitive.M {
 
 }
 
-/* Devuelve la cantidad de paquetes con $ProtoTp */
+/* Devuelve la cantidad de paquetes con $ProtoIp. Ordena por total desc.  */
 func DameProtocolosRedMayorEmision() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -375,6 +375,7 @@ func DameSrcMacEmision(mac string) []primitive.M {
 
 } */
 
+/* Devuelve la cantidad de paquetes y bytes enviados a una $srcIp. Ordena por bytes desc paquetes desc. */
 func DameDstIp(mac string) []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

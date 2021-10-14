@@ -12,10 +12,10 @@ import (
 /* Variable que exporta la conexion a la BD */
 var MongoCN = ConectarBD()
 
-/* clientOptions for MongoDB. */
+/* Para usar variables de entorno y cargar la URI. */
 var clientOptions = options.Client().ApplyURI(os.Getenv("MONGODB_URI"))
 
-/* Funcion para conectarse a la BD. */
+/* Reutilizacion de conexion a la BD. */
 func ConectarBD() *mongo.Client {
 	/* Para pruebas locales. */
 	if os.Getenv("MONGODB_URI") == "" {
@@ -26,7 +26,7 @@ func ConectarBD() *mongo.Client {
 		log.Fatal(err.Error())
 		return client
 	}
-
+	/* Chequeamos que la BD este activa. */
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -37,7 +37,7 @@ func ConectarBD() *mongo.Client {
 	return client
 }
 
-/* Chequea que la conexion este activa antes de ejecutar un Handler. */
+/* Metodo utilizado por el Middleware ChequeoDb. Revisa que la db este activa antes de ejecutar un Handler. */
 func ChequeoConexion() int {
 	err := MongoCN.Ping(context.TODO(), nil)
 	if err != nil {
