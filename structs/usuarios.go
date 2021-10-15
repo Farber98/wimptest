@@ -15,11 +15,3 @@ type CambiarPassword struct {
 	NuevaPassword string `bson:"nuevapassword" json:"nuevapassword,omitempty"`
 	Confirmacion  string `bson:"confirmacion" json:"confirmacion,omitempty"`
 }
-
-type CrearUsuario struct {
-	Usuario       string `bson:"usuario" json:"usuario,omitempty"`
-	Email         string `bson:"email" json:"email,omitempty"`
-	Password      string `bson:"password" json:"password,omitempty"`
-	UsuarioAdmin  string `bson:"usuarioadmin" json:"usuarioadmin,omitempty"`
-	PasswordAdmin string `bson:"passwordadmin" json:"passwordadmin,omitempty"`
-}

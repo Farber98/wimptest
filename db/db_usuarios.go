@@ -52,31 +52,6 @@ func UsuarioDuplicado(nombre string) (structs.Usuarios, bool, string) {
 	return result, true, ID
 }
 
-/* Chequea si un usuario es admin */
-func EsAdmin(nombre string) bool {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	db := MongoCN.Database(DB_NOMBRE)
-	coll := db.Collection(COL_USUARIOS)
-
-	condition := bson.M{
-		"$and": []bson.M{
-			{"usuario": nombre},
-			{"admin": true},
-		},
-	}
-
-	var result structs.Usuarios
-
-	err := coll.FindOne(ctx, condition).Decode(&result)
-	if err != nil {
-		return false
-	}
-
-	return true
-}
-
 /* Crea usuario en la BD. */
 func CrearUsuario(usuario structs.Usuarios) (string, bool, error) {
 
@@ -112,12 +87,30 @@ func IniciarSesion(usuario string, password string, chequeaAdmin bool) (structs.
 		return u, false
 	}
 
-	if chequeaAdmin {
-		admin := EsAdmin(u.Usuario)
-		if !admin {
-			return u, false
-		}
+	return u, true
+}
+
+/* Modifica la contraseña de un usuario. Utilizado por CambiarPassword. */
+func CambiarPassword(usuario string, password string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	db := MongoCN.Database(DB_NOMBRE)
+	col := db.Collection(COL_USUARIOS)
+
+	filter := bson.D{{"usuario", usuario}}
+	update := bson.D{
+		{"$set",
+			bson.D{
+				{"password", password},
+			},
+		},
 	}
 
-	return u, true
+	_, err := col.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

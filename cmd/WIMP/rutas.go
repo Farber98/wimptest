@@ -18,8 +18,9 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 	/* Rutas */
 
 	/* Usuarios */
-	r.HandleFunc("/usuarios/crear", midl.ChequeoDB((manejadores.CrearUsuario))).Methods("POST")
+	r.HandleFunc("/usuarios/crear", midl.ValidarJwt(midl.ChequeoDB(manejadores.CrearUsuario))).Methods("POST")
 	r.HandleFunc("/usuarios/iniciar-sesion", midl.ChequeoDB((manejadores.IniciarSesion))).Methods("POST")
+	r.HandleFunc("/usuarios/cambiar-password", midl.ValidarJwt(midl.ChequeoDB(manejadores.CambiarPassword))).Methods("PATCH")
 
 	/* Switches */
 	//r.HandleFunc("/switches/crear", midl.ValidarJwt(midl.ChequeoDB(manejadores.CrearSwitch))).Methods("POST")

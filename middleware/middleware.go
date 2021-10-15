@@ -93,6 +93,7 @@ func ValidarJwt(next http.HandlerFunc) http.HandlerFunc {
 
 var TokenUsuario string
 var TokenIdUsuario string
+var TokenEsAdmin bool
 
 /* Funcion utilizada por middleware ValidateJwt para extraer atributos de un token */
 func ProcesarToken(tk string) (*structs.Claim, bool, string, error) {
@@ -111,10 +112,11 @@ func ProcesarToken(tk string) (*structs.Claim, bool, string, error) {
 		return clave, nil
 	})
 	if err == nil {
-		_, found, ID := db.UsuarioDuplicado(claims.Usuario)
+		result, found, ID := db.EmailDuplicado(claims.Email)
 		if found {
-			TokenUsuario = claims.Usuario
+			TokenUsuario = result.Usuario
 			TokenIdUsuario = ID
+			TokenEsAdmin = result.Admin
 		}
 
 		return claims, found, TokenIdUsuario, nil

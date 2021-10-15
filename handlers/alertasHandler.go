@@ -37,7 +37,7 @@ func AlertasPorMac(w http.ResponseWriter, r *http.Request) {
 	var s structs.Switches
 	err := json.NewDecoder(r.Body).Decode(&s)
 	if err != nil {
-		http.Error(w, "Datos incorrectos."+err.Error(), http.StatusBadRequest)
+		http.Error(w, "error al decodificar el JSON de la peticion: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 

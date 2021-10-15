@@ -32,7 +32,7 @@ func GenerarJwt(t structs.Usuarios) (string, error) {
 	return tokenStr, nil
 }
 
-/* Encriptar password, usada por CrearUsuario.  */
+/* Encriptar password, usada por CrearUsuario y CambiarPassword.  */
 func EncriptarPassword(password string) (string, error) {
 	cost := 8
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), cost)

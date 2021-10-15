@@ -11,7 +11,7 @@ func VerTopologia(w http.ResponseWriter, r *http.Request) {
 
 	results, status := db.DameTopologia()
 	if !status {
-		http.Error(w, "Error al traer la topologia. ", http.StatusInternalServerError)
+		http.Error(w, "error al decodificar el JSON de la peticion: ", http.StatusInternalServerError)
 		return
 	}
 

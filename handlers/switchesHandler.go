@@ -13,7 +13,7 @@ func VerSwitches(w http.ResponseWriter, r *http.Request) {
 
 	results, status := db.DameSwitches()
 	if !status {
-		http.Error(w, "Error al traer los switches. ", http.StatusInternalServerError)
+		http.Error(w, "error al decodificar el JSON de la peticion: ", http.StatusInternalServerError)
 		return
 	}
 
@@ -28,7 +28,7 @@ func UbicarSwitch(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&s)
 	if err != nil {
-		http.Error(w, "Datos incorrectos. "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "error al decodificar el JSON de la peticion: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
