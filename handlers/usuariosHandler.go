@@ -8,7 +8,6 @@ import (
 	"github.com/Farber98/WIMP/db"
 	"github.com/Farber98/WIMP/helpers"
 	midl "github.com/Farber98/WIMP/middleware"
-	"github.com/Farber98/WIMP/models"
 	"github.com/Farber98/WIMP/structs"
 )
 
@@ -113,7 +112,7 @@ func IniciarSesion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := models.LoginResponse{
+	response := structs.LoginResponse{
 		Token: jwtKey,
 	}
 
