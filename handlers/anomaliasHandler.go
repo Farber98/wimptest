@@ -9,9 +9,9 @@ import (
 	"github.com/Farber98/WIMP/structs"
 )
 
-func VerAnomalias(w http.ResponseWriter, r *http.Request) {
+func ListarAnomalias(w http.ResponseWriter, r *http.Request) {
 
-	results, status := db.DameAnomalias()
+	results, status := db.ListarAnomalias()
 	if !status {
 		http.Error(w, "Error al traer las anomalias. ", http.StatusInternalServerError)
 		return
@@ -23,9 +23,9 @@ func VerAnomalias(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func RankingAnomaliasPorMac(w http.ResponseWriter, r *http.Request) {
+func RankingAnomalias(w http.ResponseWriter, r *http.Request) {
 
-	results := db.RankingAnomaliasPorMac()
+	results := db.RankingAnomalias()
 
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -33,7 +33,7 @@ func RankingAnomaliasPorMac(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AnomaliasPorMac(w http.ResponseWriter, r *http.Request) {
+func AnomaliasSrcMac(w http.ResponseWriter, r *http.Request) {
 	var s structs.Switches
 	err := json.NewDecoder(r.Body).Decode(&s)
 	if err != nil {
@@ -48,7 +48,7 @@ func AnomaliasPorMac(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	results := db.DameSrcMacAnomalias(s.Mac)
+	results := db.AnomaliasSrcMac(s)
 
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)

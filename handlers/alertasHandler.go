@@ -9,9 +9,9 @@ import (
 	"github.com/Farber98/WIMP/structs"
 )
 
-func VerAlertas(w http.ResponseWriter, r *http.Request) {
+func ListarAlertas(w http.ResponseWriter, r *http.Request) {
 
-	results, status := db.DameAlertas()
+	results, status := db.ListarAlertas()
 	if !status {
 		http.Error(w, "Error al traer las alertas. ", http.StatusInternalServerError)
 		return
@@ -48,7 +48,7 @@ func AlertasPorMac(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	results := db.DameSrcMacAlertas(s.Mac)
+	results := db.AlertasPorMac(s)
 
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)

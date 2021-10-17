@@ -7,9 +7,9 @@ import (
 	"github.com/Farber98/WIMP/db"
 )
 
-func VerTopologia(w http.ResponseWriter, r *http.Request) {
+func ListarTopologia(w http.ResponseWriter, r *http.Request) {
 
-	results, status := db.DameTopologia()
+	results, status := db.ListarTopologia()
 	if !status {
 		http.Error(w, "error al decodificar el JSON de la peticion: ", http.StatusInternalServerError)
 		return

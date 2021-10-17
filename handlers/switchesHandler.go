@@ -9,9 +9,9 @@ import (
 	"github.com/Farber98/WIMP/structs"
 )
 
-func VerSwitches(w http.ResponseWriter, r *http.Request) {
+func ListarSwitches(w http.ResponseWriter, r *http.Request) {
 
-	results, status := db.DameSwitches()
+	results, status := db.ListarSwitches()
 	if !status {
 		http.Error(w, "error al decodificar el JSON de la peticion: ", http.StatusInternalServerError)
 		return

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/Farber98/WIMP/structs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,7 +12,7 @@ import (
 )
 
 /* Trae todos los Sw de la BD. */
-func DameAlertas() ([]primitive.M, bool) {
+func ListarAlertas() ([]primitive.M, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -81,7 +82,7 @@ func RankingAlertasPorMac() []primitive.M {
 }
 
 /* Devuelve todas las anomalias dada una $Srcmac. Ordena por timestamp desc. */
-func DameSrcMacAlertas(mac string) []primitive.M {
+func AlertasPorMac(s structs.Switches) []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -90,7 +91,7 @@ func DameSrcMacAlertas(mac string) []primitive.M {
 
 	var results []primitive.M
 
-	matchStage := bson.D{{"$match", bson.D{{"mac", mac}}}}
+	matchStage := bson.D{{"$match", bson.D{{"mac", s.Mac}}}}
 	projectStage := bson.D{{"$project", bson.D{{"mac", 1}, {"evento", 1}, {"mensaje", 1}, {"timestamp", 1}}}}
 	sortStage := bson.D{{"$sort", bson.D{{"timestamp", -1}}}}
 	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, matchStage, sortStage})

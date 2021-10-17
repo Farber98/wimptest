@@ -4,13 +4,14 @@ import (
 	"context"
 	"time"
 
+	"github.com/Farber98/WIMP/structs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 /* Devuelve la cantidad de paquetes y bytes transmitidos con $srcMac. Ordena por bytes y paquetes desc. Limita 20.  */
-func DameSrcMacMayorEmision() []primitive.M {
+func RankingSrcMacTransmision() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -48,7 +49,7 @@ func DameSrcMacMayorEmision() []primitive.M {
 }
 
 /* Devuelve la cantidad de paquetes y bytes transmitidos con $srcIp. Ordena por bytes y paquetes desc. Limita 20.  */
-func DameSrcIpMayorEmision() []primitive.M {
+func RankingSrcIpTransmision() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -86,7 +87,7 @@ func DameSrcIpMayorEmision() []primitive.M {
 }
 
 /* Devuelve la cantidad de paquetes con $ProtoApp . Ordena por total desc.*/
-func DameProtocolosAplicacionMayorEmision() []primitive.M {
+func RankingProtoApp() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -123,7 +124,7 @@ func DameProtocolosAplicacionMayorEmision() []primitive.M {
 }
 
 /* Devuelve la cantidad de paquetes con $ProtoTp. Ordena por total desc. */
-func DameProtocolosTransporteMayorEmision() []primitive.M {
+func RankingProtoTransporte() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -160,7 +161,7 @@ func DameProtocolosTransporteMayorEmision() []primitive.M {
 }
 
 /* Devuelve la cantidad de paquetes con $ProtoIp. Ordena por total desc.  */
-func DameProtocolosRedMayorEmision() []primitive.M {
+func RankingProtoRed() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -197,7 +198,7 @@ func DameProtocolosRedMayorEmision() []primitive.M {
 }
 
 /* Devuelve la cantidad de paquetes dada una $srcMac */
-func DameSrcMacEmision(mac string) []primitive.M {
+func DetalleSrcMacEmision(s structs.Switches) []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -206,7 +207,7 @@ func DameSrcMacEmision(mac string) []primitive.M {
 
 	var results []primitive.M
 
-	matchStage := bson.D{{"$match", bson.D{{"srcmac", mac}}}}
+	matchStage := bson.D{{"$match", bson.D{{"srcmac", s.Mac}}}}
 	groupStage := bson.D{{"$group", bson.D{{"_id", "total"}, {"paquetes", bson.D{{"$sum", 1}}}, {"bytes", bson.D{{"$sum", "$length"}}}}}}
 	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{matchStage, groupStage})
 	if err != nil {
@@ -376,7 +377,7 @@ func DameSrcMacEmision(mac string) []primitive.M {
 } */
 
 /* Devuelve la cantidad de paquetes y bytes enviados a una $srcIp. Ordena por bytes desc paquetes desc. */
-func DameDstIp(mac string) []primitive.M {
+func DetalleSrcMacDstIp(s structs.Switches) []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -385,7 +386,7 @@ func DameDstIp(mac string) []primitive.M {
 
 	var results []primitive.M
 
-	matchStage := bson.D{{"$match", bson.D{{"srcmac", mac}}}}
+	matchStage := bson.D{{"$match", bson.D{{"srcmac", s.Mac}}}}
 	groupStage := bson.D{{"$group", bson.D{{"_id", "$dstip"}, {"paquetes", bson.D{{"$sum", 1}}}, {"bytes", bson.D{{"$sum", "$length"}}}}}}
 	sortStage := bson.D{{"$sort", bson.D{{"bytes", -1}, {"paquetes", -1}}}}
 	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{matchStage, groupStage, sortStage})

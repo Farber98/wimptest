@@ -35,7 +35,7 @@ func UbicarSwitch(s structs.Switches) interface{} {
 }
 
 /* Trae todos los switches de la DB */
-func DameSwitches() ([]primitive.M, bool) {
+func ListarSwitches() ([]primitive.M, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

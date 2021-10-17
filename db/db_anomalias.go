@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/Farber98/WIMP/structs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,7 +12,7 @@ import (
 )
 
 /* Devuelve todas las Anomalias de la bd*/
-func DameAnomalias() ([]primitive.M, bool) {
+func ListarAnomalias() ([]primitive.M, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -44,7 +45,7 @@ func DameAnomalias() ([]primitive.M, bool) {
 }
 
 /* Devuelve Ranking de Anomalias segun $Srcmac. Ordena por cantidad desc. Limita 20. */
-func RankingAnomaliasPorMac() []primitive.M {
+func RankingAnomalias() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -81,7 +82,7 @@ func RankingAnomaliasPorMac() []primitive.M {
 }
 
 /* Devuelve anomalias dada una $Srcmac. Limita 20. */
-func DameSrcMacAnomalias(mac string) []primitive.M {
+func AnomaliasSrcMac(s structs.Switches) []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -90,7 +91,7 @@ func DameSrcMacAnomalias(mac string) []primitive.M {
 
 	var results []primitive.M
 
-	matchStage := bson.D{{"$match", bson.D{{"mac", mac}}}}
+	matchStage := bson.D{{"$match", bson.D{{"mac", s.Mac}}}}
 	projectStage := bson.D{{"$project", bson.D{{"mac", 1}, {"anomaly", 1}, {"timestamp", 1}}}}
 	sortStage := bson.D{{"$sort", bson.D{{"timestamp", -1}}}}
 	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, matchStage, sortStage})

@@ -9,7 +9,7 @@ import (
 )
 
 /* Trae todos los switches de la DB */
-func DameTopologia() ([]primitive.M, bool) {
+func ListarTopologia() ([]primitive.M, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
