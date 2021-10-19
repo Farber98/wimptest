@@ -10,7 +10,7 @@ import (
 )
 
 /* Setea Lat y Long a un switch. Busca por MAC. */
-func UbicarSwitch(s structs.Switches) interface{} {
+func UbicarSwitch(s structs.Switches) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

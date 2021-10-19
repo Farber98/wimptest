@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Farber98/WIMP/db"
+	"github.com/Farber98/WIMP/helpers"
 	"github.com/Farber98/WIMP/structs"
 	"github.com/dgrijalva/jwt-go"
 	log "github.com/go-kit/kit/log"
@@ -97,7 +98,7 @@ var TokenEsAdmin bool
 
 /* Funcion utilizada por middleware ValidateJwt para extraer atributos de un token */
 func ProcesarToken(tk string) (*structs.Claim, bool, string, error) {
-	clave := []byte(JWT_KEY)
+	clave := []byte(helpers.JWT_KEY)
 	claims := &structs.Claim{}
 
 	/* Separa el token desde el delimitador Bearer */

@@ -1,9 +1,9 @@
 package structs
 
-type SwitchWrapper struct {
+/* type SwitchWrapper struct {
 	Switch Switches
 }
-
+*/
 type Switches struct {
 	Mac string  `bson:"mac" json:"mac,omitempty"`
 	Lat float64 `bson:"lat" json:"lat,omitempty"`

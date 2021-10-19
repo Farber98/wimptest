@@ -100,7 +100,7 @@ func IniciarSesion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	document, exists := db.IniciarSesion(u.Usuario, u.Password, false)
+	document, exists := db.IniciarSesion(u.Usuario, u.Password)
 	if !exists {
 		http.Error(w, "Nombre de usuario y/o contraseña erroneos.", http.StatusBadRequest)
 		return
@@ -160,7 +160,7 @@ func CambiarPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, exists := db.IniciarSesion(midl.TokenUsuario, cambios.Password, false)
+	_, exists := db.IniciarSesion(midl.TokenUsuario, cambios.Password)
 	if !exists {
 		http.Error(w, "Contraseña anterior erronea.", http.StatusBadRequest)
 		return

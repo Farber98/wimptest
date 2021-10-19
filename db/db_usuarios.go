@@ -71,7 +71,7 @@ func CrearUsuario(usuario structs.Usuarios) (string, bool, error) {
 }
 
 /* Autentica usuario ante la BD. Utilizado por IniciarSesion. */
-func IniciarSesion(usuario string, password string, chequeaAdmin bool) (structs.Usuarios, bool) {
+func IniciarSesion(usuario string, password string) (structs.Usuarios, bool) {
 
 	/* Chequea que el nombre de usuario exista. Misma operacion que usuario duplicado. */
 	u, exists, _ := UsuarioDuplicado(usuario)
