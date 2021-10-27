@@ -58,9 +58,10 @@ func RankingProtoRed(w http.ResponseWriter, r *http.Request) {
 func DetalleSrcMac(w http.ResponseWriter, r *http.Request) {
 	var s structs.Switches
 	var results []primitive.M
-	err := json.NewDecoder(r.Body).Decode(&s)
-	if err != nil {
-		http.Error(w, "error al decodificar el JSON de la peticion: "+err.Error(), http.StatusBadRequest)
+	s.Mac = r.URL.Query().Get("mac")
+	s.Mac = strings.TrimSpace(s.Mac)
+	if s.Mac == "" {
+		http.Error(w, "Debe enviar la direccion MAC para armar el detalle.", http.StatusBadRequest)
 		return
 	}
 
