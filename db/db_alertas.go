@@ -2,13 +2,11 @@ package db
 
 import (
 	"context"
+	"log"
 	"time"
 
-	"github.com/Farber98/WIMP/structs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 /* Trae todos los Sw de la BD. */
@@ -19,24 +17,54 @@ func ListarAlertas() ([]primitive.M, bool) {
 	db := MongoCN.Database(DB_NOMBRE)
 	coll := db.Collection(COL_ALERTAS)
 
+	pipeline := make([]bson.M, 0)
 	var results []primitive.M
 
-	cursor, err := coll.Find(ctx, bson.M{}, options.Find().SetSort(bson.D{{"timestamp", -1}}))
+	lookupStage := bson.M{
+		"$lookup": bson.M{
+			"from":         "dispositivos",
+			"localField":   "mac",
+			"foreignField": "mac",
+			"as":           "device"}}
+
+	unwindStage := bson.M{
+		"$unwind": bson.M{
+			"path":                       "$device",
+			"preserveNullAndEmptyArrays": true}}
+
+	projectStage := bson.M{
+		"$project": bson.M{
+			"mac":          1,
+			"device.ip":    1,
+			"device.name":  1,
+			"device.model": 1,
+			"device.swmac": 1,
+			"device.type":  1,
+			"timestamp":    1}}
+
+	sortStage := bson.M{
+		"$sort": bson.M{
+			"timestamp": -1}}
+
+	pipeline = append(pipeline, lookupStage, unwindStage, projectStage, sortStage)
+
+	cursor, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
-		return results, false
+		log.Println(err.Error())
+		return nil, false
 	}
 
 	for cursor.Next(context.Background()) {
 		var result bson.M
 		err := cursor.Decode(&result)
 		if err != nil {
-			return results, false
+			return nil, false
 		}
 		results = append(results, result)
 	}
 
 	if err := cursor.Err(); err != nil {
-		return results, false
+		return nil, false
 	}
 
 	cursor.Close(context.Background())
@@ -54,47 +82,101 @@ func RankingAlertasPorMac() []primitive.M {
 
 	var results []primitive.M
 
-	projectStage := bson.D{{"$project", bson.D{{"mac", 1}}}}
-	groupStage := bson.D{{"$group", bson.D{{"_id", "$mac"}, {"cant", bson.D{{"$sum", 1}}}}}}
-	sortStage := bson.D{{"$sort", bson.D{{"cant", -1}}}}
-	limitStage := bson.D{{"$limit", 20}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, groupStage, sortStage, limitStage})
+	pipeline := make([]bson.M, 0)
+
+	lookupStage := bson.M{
+		"$lookup": bson.M{
+			"from":         "dispositivos",
+			"localField":   "mac",
+			"foreignField": "mac",
+			"as":           "dispositivo"}}
+
+	unwindStage := bson.M{
+		"$unwind": bson.M{
+			"path":                       "$dispositivo",
+			"preserveNullAndEmptyArrays": true}}
+
+	groupStage := bson.M{
+		"$group": bson.M{
+			"_id": bson.M{
+				"mac":  "$mac",
+				"ip":   "$dispositivo.ip",
+				"name": "$dispositivo.name",
+			},
+			"cant": bson.M{
+				"$sum": 1}}}
+
+	projectStage := bson.M{
+		"$project": bson.M{
+			"mac":              1,
+			"dispositivo.ip":   1,
+			"dispositivo.name": 1}}
+
+	sortStage := bson.M{
+		"$sort": bson.M{
+			"cant": -1}}
+
+	limitStage := bson.M{"$limit": 20}
+
+	pipeline = append(pipeline, lookupStage, unwindStage, projectStage, groupStage, sortStage, limitStage)
+
+	data, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
-		return results
+		log.Println(err.Error())
+		return nil
 	}
 
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
-			return results
-		}
-		results = append(results, result)
+	err = data.All(ctx, &results)
+	if err != nil {
+		log.Println(err.Error())
+		return nil
 	}
-
-	if err := cursor.Err(); err != nil {
-		return results
-	}
-
-	cursor.Close(context.Background())
 
 	return results
 }
 
 /* Devuelve todas las anomalias dada una $Srcmac. Ordena por timestamp desc. */
-func AlertasPorMac(s structs.Switches) []primitive.M {
+/* func AlertasPorMac(s structs.Switches) []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)
-	coll := db.Collection(COL_ALERTAS)
+	coll := db.Collection(COL_DISPOSITIVOS)
 
 	var results []primitive.M
+	pipeline := make([]bson.M, 0)
 
-	matchStage := bson.D{{"$match", bson.D{{"mac", s.Mac}}}}
-	projectStage := bson.D{{"$project", bson.D{{"mac", 1}, {"evento", 1}, {"mensaje", 1}, {"timestamp", 1}}}}
-	sortStage := bson.D{{"$sort", bson.D{{"timestamp", -1}}}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, matchStage, sortStage})
+	matchStage := bson.M{
+		"$match": bson.M{
+			"mac": s.Mac}}
+
+	lookupStage := bson.M{
+		"$lookup": bson.M{
+			"from":         "dispositivos",
+			"localField":   "mac",
+			"foreignField": "mac",
+			"as":           "dispositivo"}}
+
+	projectStage := bson.M{
+		"$project": bson.M{
+			"mac":               1,
+			"evento":            1,
+			"mensaje":           1,
+			"timestamp":         1,
+			"dispositivo.ip":    1,
+			"dispositivo.name":  1,
+			"dispositivo.model": 1,
+			"dispositivo.swmac": 1,
+		}}
+
+	sortStage := bson.M{
+		"$sort": bson.M{
+			"timestamp": -1}}
+
+	pipeline = append(pipeline, matchStage, lookupStage, projectStage, sortStage)
+
+	cursor, err := coll.Aggregate(ctx, pipeline)
+
 	if err != nil {
 		return results
 	}
@@ -116,7 +198,7 @@ func AlertasPorMac(s structs.Switches) []primitive.M {
 
 	return results
 
-}
+} */
 
 /* func Iterador(routineCtx context.Context, stream *mongo.ChangeStream) {
 	defer stream.Close(routineCtx)

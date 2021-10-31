@@ -2,85 +2,58 @@ package db
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/Farber98/WIMP/structs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 /* Devuelve la cantidad de paquetes y bytes transmitidos con $srcMac. Ordena por bytes y paquetes desc. Limita 20.  */
 func RankingSrcMacTransmision() []primitive.M {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
 	db := MongoCN.Database(DB_NOMBRE)
 	coll := db.Collection(COL_PAQUETES)
-
 	var results []primitive.M
+	pipeline := make([]bson.M, 0)
 
-	projectStage := bson.D{{"$project", bson.D{{"srcmac", 1}, {"length", 1}}}}
-	groupStage := bson.D{{"$group", bson.D{{"_id", "$srcmac"}, {"paquetes", bson.D{{"$sum", 1}}}, {"bytes", bson.D{{"$sum", "$length"}}}}}}
-	sortStage := bson.D{{"$sort", bson.D{{"bytes", -1}, {"paquetes", -1}}}}
-	limitStage := bson.D{{"$limit", 20}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, groupStage, sortStage, limitStage})
+	projectStage := bson.M{
+		"$project": bson.M{
+			"srcip":  1,
+			"srcmac": 1,
+			"length": 1}}
+
+	groupStage := bson.M{
+		"$group": bson.M{
+			"_id": bson.M{
+				"srcmac": "$srcmac",
+				"srcip":  "$srcip",
+			},
+			"paquetes": bson.M{"$sum": 1},
+			"bytes":    bson.M{"$sum": "$length"}}}
+
+	sortStage := bson.M{
+		"$sort": bson.M{
+			"bytes":    -1,
+			"paquetes": -1}}
+
+	limitStage := bson.M{"$limit": 20}
+
+	pipeline = append(pipeline, projectStage, groupStage, sortStage, limitStage)
+
+	data, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
-		return results
+		log.Println(err.Error())
+		return nil
 	}
 
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
-			return results
-		}
-		results = append(results, result)
-	}
-
-	if err := cursor.Err(); err != nil {
-		return results
-	}
-
-	cursor.Close(context.Background())
-
-	return results
-
-}
-
-/* Devuelve la cantidad de paquetes y bytes transmitidos con $srcIp. Ordena por bytes y paquetes desc. Limita 20.  */
-func RankingSrcIpTransmision() []primitive.M {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	db := MongoCN.Database(DB_NOMBRE)
-	coll := db.Collection(COL_PAQUETES)
-
-	var results []primitive.M
-
-	projectStage := bson.D{{"$project", bson.D{{"srcip", 1}, {"length", 1}}}}
-	groupStage := bson.D{{"$group", bson.D{{"_id", "$srcip"}, {"paquetes", bson.D{{"$sum", 1}}}, {"bytes", bson.D{{"$sum", "$length"}}}}}}
-	sortStage := bson.D{{"$sort", bson.D{{"bytes", -1}, {"paquetes", -1}}}}
-	limitStage := bson.D{{"$limit", 20}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, groupStage, sortStage, limitStage})
+	err = data.All(ctx, &results)
 	if err != nil {
-		return results
+		log.Println(err.Error())
+		return nil
 	}
-
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
-			return results
-		}
-		results = append(results, result)
-	}
-
-	if err := cursor.Err(); err != nil {
-		return results
-	}
-
-	cursor.Close(context.Background())
 
 	return results
 
@@ -95,29 +68,28 @@ func RankingProtoApp() []primitive.M {
 	coll := db.Collection(COL_PAQUETES)
 
 	var results []primitive.M
+	pipeline := make([]bson.M, 0)
 
-	projectStage := bson.D{{"$project", bson.D{{"protoapp", 1}}}}
-	groupStage := bson.D{{"$group", bson.D{{"_id", "$protoapp"}, {"total", bson.D{{"$sum", 1}}}}}}
-	sortStage := bson.D{{"$sort", bson.D{{"total", -1}}}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, groupStage, sortStage})
+	projectStage := bson.M{
+		"$project": bson.M{"protoapp": 1}}
+	groupStage := bson.M{"$group": bson.M{
+		"_id":   "$protoapp",
+		"total": bson.M{"$sum": 1}}}
+	sortStage := bson.M{
+		"$sort": bson.M{"total": -1}}
+	pipeline = append(pipeline, projectStage, groupStage, sortStage)
+
+	data, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
-		return results
+		log.Println(err.Error())
+		return nil
 	}
 
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
-			return results
-		}
-		results = append(results, result)
+	err = data.All(ctx, &results)
+	if err != nil {
+		log.Println(err.Error())
+		return nil
 	}
-
-	if err := cursor.Err(); err != nil {
-		return results
-	}
-
-	cursor.Close(context.Background())
 
 	return results
 
@@ -132,29 +104,30 @@ func RankingProtoTransporte() []primitive.M {
 	coll := db.Collection(COL_PAQUETES)
 
 	var results []primitive.M
+	pipeline := make([]bson.M, 0)
 
-	projectStage := bson.D{{"$project", bson.D{{"prototp", 1}}}}
-	groupStage := bson.D{{"$group", bson.D{{"_id", "$prototp"}, {"total", bson.D{{"$sum", 1}}}}}}
-	sortStage := bson.D{{"$sort", bson.D{{"total", -1}}}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, groupStage, sortStage})
+	projectStage := bson.M{
+		"$project": bson.M{
+			"prototp": 1}}
+	groupStage := bson.M{
+		"$group": bson.M{
+			"_id":   "$prototp",
+			"total": bson.M{"$sum": 1}}}
+	sortStage := bson.M{
+		"$sort": bson.M{"total": -1}}
+	pipeline = append(pipeline, projectStage, groupStage, sortStage)
+
+	data, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
-		return results
+		log.Println(err.Error())
+		return nil
 	}
 
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
-			return results
-		}
-		results = append(results, result)
+	err = data.All(ctx, &results)
+	if err != nil {
+		log.Println(err.Error())
+		return nil
 	}
-
-	if err := cursor.Err(); err != nil {
-		return results
-	}
-
-	cursor.Close(context.Background())
 
 	return results
 
@@ -169,29 +142,30 @@ func RankingProtoRed() []primitive.M {
 	coll := db.Collection(COL_PAQUETES)
 
 	var results []primitive.M
+	pipeline := make([]bson.M, 0)
 
-	projectStage := bson.D{{"$project", bson.D{{"protoip", 1}}}}
-	groupStage := bson.D{{"$group", bson.D{{"_id", "$protoip"}, {"total", bson.D{{"$sum", 1}}}}}}
-	sortStage := bson.D{{"$sort", bson.D{{"total", -1}}}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{projectStage, groupStage, sortStage})
+	projectStage := bson.M{
+		"$project": bson.M{
+			"protoip": 1}}
+	groupStage := bson.M{
+		"$group": bson.M{
+			"_id":   "$protoip",
+			"total": bson.M{"$sum": 1}}}
+	sortStage := bson.M{
+		"$sort": bson.M{"total": -1}}
+	pipeline = append(pipeline, projectStage, groupStage, sortStage)
+
+	data, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
-		return results
+		log.Println(err.Error())
+		return nil
 	}
 
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
-			return results
-		}
-		results = append(results, result)
+	err = data.All(ctx, &results)
+	if err != nil {
+		log.Println(err.Error())
+		return nil
 	}
-
-	if err := cursor.Err(); err != nil {
-		return results
-	}
-
-	cursor.Close(context.Background())
 
 	return results
 
@@ -206,28 +180,30 @@ func DetalleSrcMacEmision(s structs.Switches) []primitive.M {
 	coll := db.Collection(COL_PAQUETES)
 
 	var results []primitive.M
+	pipeline := make([]bson.M, 0)
 
-	matchStage := bson.D{{"$match", bson.D{{"srcmac", s.Mac}}}}
-	groupStage := bson.D{{"$group", bson.D{{"_id", "total"}, {"paquetes", bson.D{{"$sum", 1}}}, {"bytes", bson.D{{"$sum", "$length"}}}}}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{matchStage, groupStage})
+	matchStage := bson.M{
+		"$match": bson.M{
+			"srcmac": s.Mac}}
+	groupStage := bson.M{
+		"$group": bson.M{
+			"_id":      "total",
+			"paquetes": bson.M{"$sum": 1},
+			"bytes":    bson.M{"$sum": "$length"}}}
+
+	pipeline = append(pipeline, matchStage, groupStage)
+
+	data, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
-		return results
+		log.Println(err.Error())
+		return nil
 	}
 
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
-			return results
-		}
-		results = append(results, result)
+	err = data.All(ctx, &results)
+	if err != nil {
+		log.Println(err.Error())
+		return nil
 	}
-
-	if err := cursor.Err(); err != nil {
-		return results
-	}
-
-	cursor.Close(context.Background())
 
 	return results
 
@@ -385,29 +361,33 @@ func DetalleSrcMacDstIp(s structs.Switches) []primitive.M {
 	coll := db.Collection(COL_PAQUETES)
 
 	var results []primitive.M
+	pipeline := make([]bson.M, 0)
 
-	matchStage := bson.D{{"$match", bson.D{{"srcmac", s.Mac}}}}
-	groupStage := bson.D{{"$group", bson.D{{"_id", "$dstip"}, {"paquetes", bson.D{{"$sum", 1}}}, {"bytes", bson.D{{"$sum", "$length"}}}}}}
-	sortStage := bson.D{{"$sort", bson.D{{"bytes", -1}, {"paquetes", -1}}}}
-	cursor, err := coll.Aggregate(ctx, mongo.Pipeline{matchStage, groupStage, sortStage})
+	matchStage := bson.M{
+		"$match": bson.M{
+			"srcmac": s.Mac}}
+	groupStage := bson.M{
+		"$group": bson.M{
+			"_id":      "$dstip",
+			"paquetes": bson.M{"$sum": 1},
+			"bytes":    bson.M{"$sum": "$length"}}}
+	sortStage := bson.M{
+		"$sort": bson.M{
+			"bytes":    -1,
+			"paquetes": -1}}
+	pipeline = append(pipeline, matchStage, groupStage, sortStage)
+
+	data, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
-		return results
+		log.Println(err.Error())
+		return nil
 	}
 
-	for cursor.Next(context.Background()) {
-		var result bson.M
-		err := cursor.Decode(&result)
-		if err != nil {
-			return results
-		}
-		results = append(results, result)
+	err = data.All(ctx, &results)
+	if err != nil {
+		log.Println(err.Error())
+		return nil
 	}
-
-	if err := cursor.Err(); err != nil {
-		return results
-	}
-
-	cursor.Close(context.Background())
 
 	return results
 

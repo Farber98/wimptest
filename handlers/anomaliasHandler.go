@@ -3,10 +3,8 @@ package manejadores
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 
 	"github.com/Farber98/WIMP/db"
-	"github.com/Farber98/WIMP/structs"
 )
 
 func ListarAnomalias(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +31,7 @@ func RankingAnomalias(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AnomaliasSrcMac(w http.ResponseWriter, r *http.Request) {
+/* func AnomaliasSrcMac(w http.ResponseWriter, r *http.Request) {
 	var s structs.Switches
 	err := json.NewDecoder(r.Body).Decode(&s)
 	if err != nil {
@@ -54,3 +52,4 @@ func AnomaliasSrcMac(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(results)
 }
+*/

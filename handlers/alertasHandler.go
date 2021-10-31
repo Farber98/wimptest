@@ -3,10 +3,8 @@ package manejadores
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 
 	"github.com/Farber98/WIMP/db"
-	"github.com/Farber98/WIMP/structs"
 )
 
 func ListarAlertas(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +31,7 @@ func RankingAlertasPorMac(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func AlertasPorMac(w http.ResponseWriter, r *http.Request) {
+/* func AlertasPorMac(w http.ResponseWriter, r *http.Request) {
 	var s structs.Switches
 	err := json.NewDecoder(r.Body).Decode(&s)
 	if err != nil {
@@ -53,7 +51,7 @@ func AlertasPorMac(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(results)
-}
+} */
 
 /* Permite borrar un switch siempre y cuando no tenga hijos asociados. */
 /* func ConfirmarAlerta(w http.ResponseWriter, r *http.Request) {

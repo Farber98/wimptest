@@ -13,18 +13,13 @@ import (
 func UbicarSwitch(s structs.Switches) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
 	db := MongoCN.Database(DB_NOMBRE)
-	col := db.Collection(COL_SWITCHES)
-	filter := bson.D{{"mac", s.Mac}}
-	update := bson.D{
-		{"$set",
-			bson.D{
-				{"lat", s.Lat},
-				{"lng", s.Lng},
-			},
-		},
-	}
+	col := db.Collection(COL_DISPOSITIVOS)
+	filter := bson.M{"mac": s.Mac}
+	update := bson.M{
+		"$set": bson.M{
+			"lat": s.Lat,
+			"lng": s.Lng}}
 
 	_, err := col.UpdateOne(ctx, filter, update)
 	if err != nil {
@@ -38,13 +33,12 @@ func UbicarSwitch(s structs.Switches) error {
 func ListarSwitches() ([]primitive.M, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
 	db := MongoCN.Database(DB_NOMBRE)
-	coll := db.Collection(COL_SWITCHES)
+	coll := db.Collection(COL_DISPOSITIVOS)
 
 	var results []primitive.M
 
-	cursor, err := coll.Find(ctx, bson.M{})
+	cursor, err := coll.Find(ctx, bson.M{"type": "SW"})
 	if err != nil {
 		return results, false
 	}

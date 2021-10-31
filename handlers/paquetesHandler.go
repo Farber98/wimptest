@@ -19,15 +19,6 @@ func RankingSrcMacTransmision(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(results)
 }
 
-func RankingSrcIpTransmision(w http.ResponseWriter, r *http.Request) {
-
-	results := db.RankingSrcIpTransmision()
-
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(results)
-}
-
 func RankingProtoApp(w http.ResponseWriter, r *http.Request) {
 
 	results := db.RankingProtoApp()

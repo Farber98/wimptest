@@ -54,7 +54,6 @@ func UsuarioDuplicado(nombre string) (structs.Usuarios, bool, string) {
 
 /* Crea usuario en la BD. */
 func CrearUsuario(usuario structs.Usuarios) (string, bool, error) {
-
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -98,14 +97,9 @@ func CambiarPassword(usuario string, password string) error {
 	db := MongoCN.Database(DB_NOMBRE)
 	col := db.Collection(COL_USUARIOS)
 
-	filter := bson.D{{"usuario", usuario}}
-	update := bson.D{
-		{"$set",
-			bson.D{
-				{"password", password},
-			},
-		},
-	}
+	filter := bson.M{
+		"usuario": usuario}
+	update := bson.M{"$set": bson.M{"password": password}}
 
 	_, err := col.UpdateOne(ctx, filter, update)
 	if err != nil {
