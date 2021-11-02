@@ -39,7 +39,6 @@ func ListarAnomalias() ([]primitive.M, bool) {
 			"device.ip":    1,
 			"device.name":  1,
 			"device.model": 1,
-			"device.swmac": 1,
 			"device.type":  1,
 			"timestamp":    1}}
 
