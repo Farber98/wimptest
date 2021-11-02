@@ -36,11 +36,9 @@ func ListarAlertas() ([]primitive.M, bool) {
 		"$project": bson.M{
 			"mac":          1,
 			"evento":       1,
-			"mensaje":      1,
 			"device.ip":    1,
 			"device.name":  1,
 			"device.model": 1,
-			"device.swmac": 1,
 			"device.type":  1,
 			"timestamp":    1}}
 
