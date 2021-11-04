@@ -29,6 +29,7 @@ func configuroRouter() (handlers.CORSOption, handlers.CORSOption, handlers.CORSO
 	//r.HandleFunc("/switches/activar", midl.ValidarJwt(midl.ChequeoDB(manejadores.ActivarSwitch))).Methods("PUT")
 	//r.HandleFunc("/switches/desactivar", midl.ValidarJwt(midl.ChequeoDB(manejadores.DesactivarSwitch))).Methods("PUT")
 	r.HandleFunc("/switches", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarSwitches))).Methods("GET")
+	r.HandleFunc("/aps", midl.ValidarJwt(midl.ChequeoDB(manejadores.ListarAps))).Methods("GET")
 	r.HandleFunc("/switches/ubicar", midl.ValidarJwt(midl.ChequeoDB(manejadores.UbicarSwitch))).Methods("PATCH")
 
 	/* Alertas */

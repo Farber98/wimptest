@@ -23,6 +23,20 @@ func ListarSwitches(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func ListarAps(w http.ResponseWriter, r *http.Request) {
+
+	results, status := db.ListarAps()
+	if !status {
+		http.Error(w, "error al decodificar el JSON de la peticion: ", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(results)
+
+}
+
 func UbicarSwitch(w http.ResponseWriter, r *http.Request) {
 	var s structs.Switches
 

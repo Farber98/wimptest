@@ -61,6 +61,38 @@ func ListarSwitches() ([]primitive.M, bool) {
 	return results, true
 }
 
+/* Trae todos los AP de la DB */
+func ListarAps() ([]primitive.M, bool) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	db := MongoCN.Database(DB_NOMBRE)
+	coll := db.Collection(COL_DISPOSITIVOS)
+
+	var results []primitive.M
+
+	cursor, err := coll.Find(ctx, bson.M{"type": "AP"})
+	if err != nil {
+		return results, false
+	}
+
+	for cursor.Next(context.Background()) {
+		var result bson.M
+		err := cursor.Decode(&result)
+		if err != nil {
+			return results, false
+		}
+		results = append(results, result)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return results, false
+	}
+
+	cursor.Close(context.Background())
+
+	return results, true
+}
+
 /* Chequea si el nombre de un switch ya existe en la bd */
 /* func NombreDuplicado(nombre string) (structs.Switches, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
