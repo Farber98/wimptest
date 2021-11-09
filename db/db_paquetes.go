@@ -31,8 +31,8 @@ func RankingSrcMacTransmision() []primitive.M {
 				"srcmac": "$srcmac",
 				"srcip":  "$srcip",
 			},
-			"paquetes": bson.M{"$sum": 1},
-			"bytes":    bson.M{"$sum": "$length"}}}
+			"bytes":    bson.M{"$sum": "$length"},
+			"paquetes": bson.M{"$sum": 1}}}
 
 	sortStage := bson.M{
 		"$sort": bson.M{
@@ -188,8 +188,8 @@ func DetalleSrcMacEmision(s structs.Switches) []primitive.M {
 	groupStage := bson.M{
 		"$group": bson.M{
 			"_id":      "total",
-			"paquetes": bson.M{"$sum": 1},
-			"bytes":    bson.M{"$sum": "$length"}}}
+			"bytes":    bson.M{"$sum": "$length"},
+			"paquetes": bson.M{"$sum": 1}}}
 
 	pipeline = append(pipeline, matchStage, groupStage)
 
