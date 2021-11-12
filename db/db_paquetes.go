@@ -60,7 +60,7 @@ func RankingSrcMacTransmision() []primitive.M {
 }
 
 /* Devuelve la cantidad de paquetes con $ProtoApp . Ordena por total desc.*/
-func RankingProtoApp() []primitive.M {
+func RankingProtoApp() ([]primitive.M, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -82,16 +82,16 @@ func RankingProtoApp() []primitive.M {
 	data, err := coll.Aggregate(ctx, pipeline)
 	if err != nil {
 		log.Println(err.Error())
-		return nil
+		return nil, false
 	}
 
 	err = data.All(ctx, &results)
 	if err != nil {
 		log.Println(err.Error())
-		return nil
+		return nil, false
 	}
 
-	return results
+	return results, true
 
 }
 

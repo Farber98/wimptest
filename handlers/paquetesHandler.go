@@ -21,8 +21,11 @@ func RankingSrcMacTransmision(w http.ResponseWriter, r *http.Request) {
 
 func RankingProtoApp(w http.ResponseWriter, r *http.Request) {
 
-	results := db.RankingProtoApp()
-
+	results, status := db.RankingProtoApp()
+	if !status {
+		http.Error(w, "Error al traer el ranking. ", http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(results)
