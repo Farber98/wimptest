@@ -61,7 +61,7 @@ func RankingSrcMacTransmision() []primitive.M {
 
 /* Devuelve la cantidad de paquetes con $ProtoApp . Ordena por total desc.*/
 func RankingProtoApp() ([]primitive.M, bool) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)
