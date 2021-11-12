@@ -61,7 +61,7 @@ func RankingSrcMacTransmision() []primitive.M {
 
 /* Devuelve la cantidad de paquetes con $ProtoApp . Ordena por total desc.*/
 func RankingProtoApp() ([]primitive.M, bool) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)
@@ -97,7 +97,7 @@ func RankingProtoApp() ([]primitive.M, bool) {
 
 /* Devuelve la cantidad de paquetes con $ProtoTp. Ordena por total desc. */
 func RankingProtoTransporte() []primitive.M {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)
@@ -135,7 +135,7 @@ func RankingProtoTransporte() []primitive.M {
 
 /* Devuelve la cantidad de paquetes con $ProtoIp. Ordena por total desc.  */
 func RankingProtoRed() []primitive.M {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)
@@ -173,7 +173,7 @@ func RankingProtoRed() []primitive.M {
 
 /* Devuelve la cantidad de paquetes dada una $srcMac */
 func DetalleSrcMacEmision(s structs.Switches) []primitive.M {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)
