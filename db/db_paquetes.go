@@ -12,7 +12,7 @@ import (
 
 /* Devuelve la cantidad de paquetes y bytes transmitidos con $srcMac. Ordena por bytes y paquetes desc. Limita 20.  */
 func RankingSrcMacTransmision() []primitive.M {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 	db := MongoCN.Database(DB_NOMBRE)
 	coll := db.Collection(COL_PAQUETES)
