@@ -10,7 +10,7 @@ import (
 
 /* Trae todos los switches de la DB */
 func ListarTopologia() ([]primitive.M, bool) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)

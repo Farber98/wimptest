@@ -11,7 +11,7 @@ import (
 
 /* Devuelve todas las Anomalias de la bd*/
 func ListarAnomalias() ([]primitive.M, bool) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)
@@ -74,7 +74,7 @@ func ListarAnomalias() ([]primitive.M, bool) {
 
 /* Devuelve Ranking de Anomalias segun $Srcmac. Ordena por cantidad desc. Limita 20. */
 func RankingAnomalias() []primitive.M {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)

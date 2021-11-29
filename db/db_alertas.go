@@ -11,7 +11,7 @@ import (
 
 /* Trae todos los Sw de la BD. */
 func ListarAlertas() ([]primitive.M, bool) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)
@@ -74,7 +74,7 @@ func ListarAlertas() ([]primitive.M, bool) {
 
 /* Devuelve Ranking de alertas segun $Srcmac. Ordena por cantidad desc. Limita 20. */
 func RankingAlertasPorMac() []primitive.M {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)

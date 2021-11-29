@@ -354,7 +354,7 @@ func DetalleSrcMacEmision(s structs.Switches) []primitive.M {
 
 /* Devuelve la cantidad de paquetes y bytes enviados a una $srcIp. Ordena por bytes desc paquetes desc. */
 func DetalleSrcMacDstIp(s structs.Switches) []primitive.M {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 
 	db := MongoCN.Database(DB_NOMBRE)

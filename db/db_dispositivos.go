@@ -11,7 +11,7 @@ import (
 
 /* Setea Lat y Long a un switch. Busca por MAC. */
 func UbicarSwitch(s structs.Switches) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 	db := MongoCN.Database(DB_NOMBRE)
 	col := db.Collection(COL_DISPOSITIVOS)
@@ -31,7 +31,7 @@ func UbicarSwitch(s structs.Switches) error {
 
 /* Trae todos los switches de la DB */
 func ListarSwitches() ([]primitive.M, bool) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 	db := MongoCN.Database(DB_NOMBRE)
 	coll := db.Collection(COL_DISPOSITIVOS)
@@ -63,7 +63,7 @@ func ListarSwitches() ([]primitive.M, bool) {
 
 /* Trae todos los AP de la DB */
 func ListarAps() ([]primitive.M, bool) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 180*time.Second)
 	defer cancel()
 	db := MongoCN.Database(DB_NOMBRE)
 	coll := db.Collection(COL_DISPOSITIVOS)
